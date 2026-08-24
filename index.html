@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>海外生活共識問卷（菲律賓同居 2 個月版）</title>
+  <style>
+    :root {
+      --primary: #0d9488;
+      --bg: #f0fdf4;
+      --card-bg: #ffffff;
+      --text: #1f2937;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .container {
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+    h1 { font-size: 1.35rem; margin-bottom: 8px; color: var(--primary); }
+    .category-tag {
+      display: inline-block;
+      background: #ccfbf1;
+      color: #0f766e;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 4px 12px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+    p { color: #4b5563; font-size: 0.95rem; line-height: 1.5; }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      margin: 8px 0;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      background: white;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      line-height: 1.4;
+    }
+    .btn:hover { border-color: var(--primary); background-color: #f0fdf4; }
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: bold;
+      margin-top: 16px;
+    }
+    .btn-primary:hover { background-color: #0f766e; }
+    .hidden { display: none; }
+    .progress {
+      font-size: 0.85rem;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .result-item {
+      text-align: left;
+      background: #f9fafb;
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-size: 0.88rem;
+      border-left: 4px solid #ccc;
+    }
+    .result-item.match { border-left-color: #10b981; }
+    .result-item.diff { border-left-color: #ef4444; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- 1. 起始畫面 -->
+  <div id="start-screen">
+    <h1>🇵🇭 海外生活共識問卷</h1>
+    <p style="font-weight: bold; color: var(--primary);">（菲律賓同居 2 個月版）</p>
+    <p>為了讓兩人的海外生活更順暢，出發前先來測測看彼此的默契與生活習慣吧！</p>
+    <button class="btn btn-primary" onclick="startQuiz('A')">玩家 A 開始填寫 (22 題)</button>
+  </div>
+
+  <!-- 2. 答題畫面 -->
+  <div id="quiz-screen" class="hidden">
+    <div class="progress" id="progress-text">題目 1 / 22</div>
+    <div class="category-tag" id="category-tag">分類</div>
+    <h2 id="question-text" style="font-size: 1.05rem; margin-bottom: 16px; text-align: left;">題目載入中...</h2>
+    <div id="options-container"></div>
+  </div>
+
+  <!-- 3. 中場換人畫面 -->
+  <div id="switch-screen" class="hidden">
+    <h1>換玩家 B 接手！</h1>
+    <p>玩家 A 已完成全部 22 題，請把手機或電腦交給玩家 B。</p>
+    <button class="btn btn-primary" onclick="startQuiz('B')">玩家 B 開始填寫</button>
+  </div>
+
+  <!-- 4. 結果畫面 -->
+  <div id="result-screen" class="hidden">
+    <h1>🎉 比對結果</h1>
+    <p id="score-text" style="font-size: 1.1rem; font-weight: bold; color: var(--primary);"></p>
+    <div id="details-container" style="max-height: 400px; overflow-y: auto; margin-top: 16px;"></div>
+    <button class="btn btn-primary" onclick="location.reload()">重新測驗</button>
+  </div>
+</div>
+
+<script>
+  const questions = [
+    // 一、衛浴專區
+    {
+      cat: "一、 衛浴專區",
+      title: "衛浴排程與時間：早上出門或晚上睡前的衛浴優先順序？隔音不好可否晚上 10:30 前洗漱完畢？",
+      options: [
+        "(A) 完全同意，10:30 前結束所有洗漱，避免影響休息",
+        "(B) 盡量配合，但若因行程延誤，洗漱時會極力放輕音量",
+        "(C) 習慣晚洗，希望以協調洗澡時間優先順序為主，時間不硬性規定"
+      ]
+    },
+    {
+      cat: "一、 衛浴專區",
+      title: "乾燥與清潔習慣：洗完澡是否需要順手刮水、撿髮絲？浴室門平時要關上還是打開通風？",
+      options: [
+        "(A) 洗完必須順手刮水、清掉排水孔髮絲，門要打開通風防止發霉",
+        "(B) 清除頭髮即可，水分自然乾，門關上避免浴室味道飄出",
+        "(C) 隔天大掃除時統一清理，平時隨意"
+      ]
+    },
+    // 二、基礎生活與財務管理
+    {
+      cat: "二、 基礎生活與財務管理",
+      title: "對於日常消費，如吃飯/約會誰付錢的想法？",
+      options: [
+        "(A) 徹底 AA 制，各自付各自的",
+        "(B) 輪流付錢（這次你付、下次我付，不細算金額）",
+        "(C) 建立約會基金，預先存入固定金額共同支付"
+      ]
+    },
+    {
+      cat: "二、 基礎生活與財務管理",
+      title: "關於共同錢包（採購日常用品/買菜等），你的想法？",
+      options: [
+        "(A) 預先每人出固定公積金，所有公用雜支從裡面扣",
+        "(B) 採購完憑發票或上記帳 App，月底再一次結算平分",
+        "(C) 誰順手去買就誰付，大額才平分"
+      ]
+    },
+    {
+      cat: "二、 基礎生活與財務管理",
+      title: "希望家事如何運作？",
+      options: [
+        "(A) 明確分工（例如：一人負責煮飯/洗碗，一人負責掃地/垃圾）",
+        "(B) 誰看不下去或誰有空就誰去做，不嚴格分工",
+        "(C) 共同定時清掃（例如：每週末挑 1 小時一起大掃除）"
+      ]
+    },
+    {
+      cat: "二、 基礎生活與財務管理",
+      title: "對於雜物亂丟的容忍度？",
+      options: [
+        "(A) 完全零容忍，東西用完必須立刻歸位",
+        "(B) 只要不擋到動線，一週清一次即可"
+      ]
+    },
+    {
+      cat: "二、 基礎生活與財務管理",
+      title: "對於地面整潔的容忍度？",
+      options: [
+        "(A) 極度敏感，看到頭髮/灰塵必須立刻掃吸",
+        "(B) 固定 2-3 天清理一次地面即可",
+        "(C) 踩起來沒有明顯異物感，一週吸一次地就好"
+      ]
+    },
+    // 三、生活作息與空間重疊
+    {
+      cat: "三、 生活作息與空間重疊",
+      title: "Me Time 優先度：我們不需要每天特地刻意約會或長時間聊天，一週你希望我們排幾天進行「深度交流 / 聊天時間」？",
+      options: [
+        "(A) 1-2 天即可，平時隨意",
+        "(B) 3-4 天，維持一定熱度",
+        "(C) 每天睡前稍微聊 10 分鐘就好"
+      ]
+    },
+    {
+      cat: "三、 生活作息與空間重疊",
+      title: "隱形模式訊號：當一方明確表示「現在需要 Me Time」時，希望對方怎麼配合？",
+      options: [
+        "(A) 只要戴上耳機或移到特定區域（如浴室/陽台），就當對方完全不存在",
+        "(B) 可以留在同個空間，但不要主動攀談、問問題",
+        "(C) 希望能直接口頭說明：「我現在需要獨處 30 分鐘，待會找你」"
+      ]
+    },
+    // 四、海外心理狀態與情緒社交
+    {
+      cat: "四、 海外心理狀態與情緒社交",
+      title: "情緒低落時，希望對方...",
+      options: [
+        "(A) 靜靜陪在旁邊，不用說話，給我抱抱就好",
+        "(B) 讓我徹底一個人獨處，不要理我、不要問原因",
+        "(C) 帶我出去吃好吃的或散心轉移注意力"
+      ]
+    },
+    {
+      cat: "四、 海外心理狀態與情緒社交",
+      title: "抱怨與負能量傾倒頻率：在國外遇到鳥事或很煩的事情時，你覺得一週幾次的「抱怨宣洩時間」是合適的？",
+      options: [
+        "(A) 隨時隨地，有煩事就當下吐苦水",
+        "(B) 一週最多 1-2 次，定時「垃圾時間」吐完就好",
+        "(C) 盡量自己消化，除非真的受不了才講"
+      ]
+    },
+    {
+      cat: "四、 海外心理狀態與情緒社交",
+      title: "接收抱怨時的期待：當我向你抱怨海外遇到的煩事時，你希望我提供的是？",
+      options: [
+        "(A) 單純陪我一起罵、給予情緒價值（不需要給我建議）",
+        "(B) 幫我分析問題、提供解決方案",
+        "(C) 抱抱我、帶我去吃頓好的"
+      ]
+    },
+    {
+      cat: "四、 海外心理狀態與情緒社交",
+      title: "負能量過載的止損機制：如果其中一方最近頻繁抱怨、導致另一方情緒疲勞時，我們可以怎麼提醒對方暫停？",
+      options: [
+        "(A) 設定暗號（如：「今天暫時不接收垃圾桶了」），對方聽到立刻暫停",
+        "(B) 直白告訴對方：「我現在情緒有點額滿，我們晚點再聊這個好嗎？」",
+        "(C) 轉移話題或提議先去洗澡/吃東西休息一下"
+      ]
+    },
+    // 五、異地適應與生活邊界
+    {
+      cat: "五、 異地適應與生活邊界",
+      title: "生病與照顧期待：在國外水土不服或生病時，希望對方提供什麼程度的照顧？",
+      options: [
+        "(A) 希望對方全程陪同、幫忙買藥/煮粥，提供無微不至的照顧",
+        "(B) 只需要幫忙買必要的藥品與食物，之後讓我一個人靜靜睡覺休息",
+        "(C) 幫忙聯繫醫療或買藥即可，希望對方照常過自己的行程，不用被我卡住"
+      ]
+    },
+    {
+      cat: "五、 異地適應與生活邊界",
+      title: "個人獨處與社交平衡：當其中一方想自己出門逛逛或獨處，是否願意一個月撥空幾次給對方？",
+      options: [
+        "(A) 完全沒問題，每週末都可以安排各自獨立活動的時間",
+        "(B) 一個月 1-2 次即可，異地生活還是希望大部分時間一起行動",
+        "(C) 需要提前 1-2 天告知，只要安排好隨時都可以"
+      ]
+    },
+    {
+      cat: "五、 異地適應與生活邊界",
+      title: "外食與飲食耐受度：對當地飲食適應不良時，用餐地點選擇以誰為主？是否願意陪對方尋找特定餐點？",
+      options: [
+        "(A) 以適應不良/腸胃不適的人為主，願意特地陪對方找習慣的餐廳",
+        "(B) 互相妥協，一餐陪你吃習慣的、下一餐嘗試當地的",
+        "(C) 各自買各自想吃的，再帶回住宿處一起吃"
+      ]
+    },
+    {
+      cat: "五、 異地適應與生活邊界",
+      title: "緊急狀況應變默契：遇到掉東西、治安危機或行程延誤等突發狀況時，希望對方先給予情緒價值還是直接給解決方案？",
+      options: [
+        "(A) 先安撫情緒（「沒事有我在」），等冷靜下來再一起想辦法",
+        "(B) 不要廢話，直接給予解決方案與行動指引",
+        "(C) 兩者並行，一邊安慰一邊立刻處理問題"
+      ]
+    },
+    // 六、環境與設備適應
+    {
+      cat: "六、 環境與設備適應",
+      title: "蟲害與垃圾處理：熱帶國家極易招引蟻蟲，吃完的飲料杯、食物殘渣必須當天清空還是可以過夜？",
+      options: [
+        "(A) 絕對不能過夜！食物殘渣必須立刻綁緊密封或當天丟掉",
+        "(B) 只要洗乾淨或綁緊包好，放過夜隔天早上丟可以接受",
+        "(C) 只要沒看到螞蟻蟑螂，累積到垃圾桶滿了再一起丟"
+      ]
+    },
+    {
+      cat: "六、 環境與設備適應",
+      title: "防盜與門禁習慣：出門或入睡時門窗能否接受鎖緊？",
+      options: [
+        "(A) 非常堅持，只要離開視線或入睡，門鎖、防盜鎖必須全上",
+        "(B) 出門鎖門即可，人在室內或入睡時鎖主門就好，窗戶留縫通風",
+        "(C) 社區若有保安就可以放鬆一點，不用每次都鎖到最死"
+      ]
+    },
+    {
+      cat: "六、 環境與設備適應",
+      title: "水質與用水習慣：菲律賓水質較硬，若喝不習慣，可接受多久一起採買一次罐裝水？",
+      options: [
+        "(A) 每週固定大採買一次（買大容量桶裝水），確保隨時有水喝",
+        "(B) 2-3 天補一次水，或者直接叫大桶水送上門",
+        "(C) 誰喝完誰去買，不特別設定固定採買週期"
+      ]
+    },
+    // 七、衝突處理與未來退場
+    {
+      cat: "七、 衝突處理與未來退場",
+      title: "吵架時絕對不可以做的事？",
+      options: [
+        "(A) 摔東西、甩門或有任何肢體暴力傾向",
+        "(B) 冷暴力、直接封鎖訊息或摔門離家出走",
+        "(C) 翻舊帳、人身攻擊或輕易說出「分手」"
+      ]
+    },
+    {
+      cat: "七、 衝突處理與未來退場",
+      title: "是否同意不帶情緒過夜？",
+      options: [
+        "(A) 必須當天把事情講清楚，絕對不能帶情緒睡覺",
+        "(B) 允許各自冷靜一晚，隔天起來再理性討論",
+        "(C) 先睡覺再說，睡醒如果沒事了就不一定要再提"
+      ]
+    },
+    {
+      cat: "七、 衝突處理與未來退場",
+      title: "若未來發現真的不適合，退場機制是？",
+      options: [
+        "(A) 給予 1-2 週緩衝期，討論開誠布公後各自尋找新住處",
+        "(B) 關閉交往狀態，轉換為純室友模式平分費用，直到旅程結束",
+        "(C) 立即結算費用，其中一方迅速改訂新住宿搬離"
+      ]
+    }
+  ];
+
+  let currentPlayer = 'A';
+  let answersA = [];
+  let answersB = [];
+  let currentQuestionIndex = 0;
+
+  function startQuiz(player) {
+    currentPlayer = player;
+    currentQuestionIndex = 0;
+    document.getElementById('start-screen').classList.add('hidden');
+    document.getElementById('switch-screen').classList.add('hidden');
+    document.getElementById('quiz-screen').classList.remove('hidden');
+    showQuestion();
+  }
+
+  function showQuestion() {
+    const q = questions[currentQuestionIndex];
+    document.getElementById('progress-text').innerText = `【玩家 ${currentPlayer}】 題目 ${currentQuestionIndex + 1} / ${questions.length}`;
+    document.getElementById('category-tag').innerText = q.cat;
+    document.getElementById('question-text').innerText = q.title;
+    
+    const container = document.getElementById('options-container');
+    container.innerHTML = '';
+    
+    q.options.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'btn';
+      btn.innerText = opt;
+      btn.onclick = () => selectOption(idx);
+      container.appendChild(btn);
+    });
+  }
+
+  function selectOption(index) {
+    if (currentPlayer === 'A') {
+      answersA.push(index);
+    } else {
+      answersB.push(index);
+    }
+
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+      showQuestion();
+    } else {
+      if (currentPlayer === 'A') {
+        document.getElementById('quiz-screen').classList.add('hidden');
+        document.getElementById('switch-screen').classList.remove('hidden');
+      } else {
+        showResults();
+      }
+    }
+  }
+
+  function showResults() {
+    document.getElementById('quiz-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.remove('hidden');
+
+    let matchCount = 0;
+    const detailsContainer = document.getElementById('details-container');
+    detailsContainer.innerHTML = '';
+
+    questions.forEach((q, i) => {
+      const match = answersA[i] === answersB[i];
+      if (match) matchCount++;
+
+      const div = document.createElement('div');
+      div.className = `result-item ${match ? 'match' : 'diff'}`;
+      div.innerHTML = `
+        <span style="font-size:0.75rem; color:#6b7280;">${q.cat}</span><br>
+        <strong>${q.title}</strong><br>
+        <div style="margin-top:6px;">
+          • 玩家 A：${q.options[answersA[i]]}<br>
+          • 玩家 B：${q.options[answersB[i]]}
+        </div>
+        <div style="margin-top:6px; color: ${match ? '#059669' : '#dc2626'}; font-weight: bold;">
+          ${match ? '✓ 完全共識' : '✗ 想法不同 (需要討論)'}
+        </div>
+      `;
+      detailsContainer.appendChild(div);
+    });
+
+    const scorePercent = Math.round((matchCount / questions.length) * 100);
+    document.getElementById('score-text').innerText = `生活契合度：${scorePercent}% (${matchCount}/${questions.length} 題共識)`;
+  }
+</script>
+
+</body>
+</html>
