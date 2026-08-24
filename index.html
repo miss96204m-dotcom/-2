@@ -90,13 +90,14 @@
     .result-item.diff { border-left-color: #ef4444; }
     .blessing-card {
       background: #f0fdf4;
-      border: 1px dashed var(--primary);
+      border: 2px dashed var(--primary);
       border-radius: 12px;
       padding: 16px;
       margin: 16px 0;
       color: #0f766e;
       font-weight: 600;
       line-height: 1.6;
+      font-size: 1.05rem;
     }
   </style>
 </head>
@@ -113,7 +114,7 @@
 
   <!-- 2. 答題畫面 -->
   <div id="quiz-screen" class="hidden">
-    <div class="progress" id="progress-text">題目 1 / 22</div>
+    <div class="progress" id="progress-text">題目 1 / 23</div>
     <div class="category-tag" id="category-tag">分類</div>
     <h2 id="question-text" style="font-size: 1.05rem; margin-bottom: 16px; text-align: left;">題目載入中...</h2>
     <div id="options-container"></div>
@@ -247,11 +248,11 @@
     },
     {
       cat: "四、 海外心理狀態與情緒社交",
-      title: "接收抱怨時的期待：當我向你抱怨海外遇到的煩事時，你希望我提供的是？",
+      title: "接收抱怨時的期待：當你向我抱怨海外遇到的煩事時，你希望我提供的是？",
       options: [
-        "(A) 單純陪我一起罵、給予情緒價值（不需要給我建議）",
-        "(B) 幫我分析問題、提供解決方案",
-        "(C) 抱抱我、帶我去吃頓好的"
+        "(A) 單純陪你一起罵、給予情緒價值（不需要給我建議）",
+        "(B) 幫你分析問題、提供解決方案",
+        "(C) 抱抱你、帶你去吃頓好的"
       ]
     },
     {
@@ -296,7 +297,7 @@
       options: [
         "(A) 先安撫情緒（「沒事有我在」），等冷靜下來再一起想辦法",
         "(B) 不要廢話，直接給予解決方案與行動指引",
-        "(C) 兩者並行，一邊安慰一邊立刻處理問題"
+        "(C) 兩者並行，一邊安慰一邊處理問題"
       ]
     },
     // 六、環境與設備適應
