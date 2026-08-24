@@ -88,6 +88,16 @@
     }
     .result-item.match { border-left-color: #10b981; }
     .result-item.diff { border-left-color: #ef4444; }
+    .blessing-card {
+      background: #f0fdf4;
+      border: 1px dashed var(--primary);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 16px 0;
+      color: #0f766e;
+      font-weight: 600;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
@@ -98,7 +108,7 @@
     <h1>🇵🇭 海外生活共識問卷</h1>
     <p style="font-weight: bold; color: var(--primary);">（菲律賓同居 2 個月版）</p>
     <p>為了讓兩人的海外生活更順暢，出發前先來測測看彼此的默契與生活習慣吧！</p>
-    <button class="btn btn-primary" onclick="startQuiz('A')">玩家 A 開始填寫 (22 題)</button>
+    <button class="btn btn-primary" onclick="startQuiz('A')">玩家 A 開始填寫</button>
   </div>
 
   <!-- 2. 答題畫面 -->
@@ -112,13 +122,19 @@
   <!-- 3. 中場換人畫面 -->
   <div id="switch-screen" class="hidden">
     <h1>換玩家 B 接手！</h1>
-    <p>玩家 A 已完成全部 22 題，請把手機或電腦交給玩家 B。</p>
+    <p>玩家 A 已完成填寫，請把手機或電腦交給玩家 B。</p>
     <button class="btn btn-primary" onclick="startQuiz('B')">玩家 B 開始填寫</button>
   </div>
 
   <!-- 4. 結果畫面 -->
   <div id="result-screen" class="hidden">
     <h1>🎉 比對結果</h1>
+    
+    <div class="blessing-card">
+      ✨ 祝福我們這趟菲律賓有美好的回憶<br>
+      能平安、成長、繼續在一起回國 ❤️
+    </div>
+
     <p id="score-text" style="font-size: 1.1rem; font-weight: bold; color: var(--primary);"></p>
     <div id="details-container" style="max-height: 400px; overflow-y: auto; margin-top: 16px;"></div>
     <button class="btn btn-primary" onclick="location.reload()">重新測驗</button>
@@ -259,11 +275,10 @@
     },
     {
       cat: "五、 異地適應與生活邊界",
-      title: "個人獨處與社交平衡：當其中一方想自己出門逛逛或獨處，是否願意一個月撥空幾次給對方？",
+      title: "個人獨處與社交平衡：理解想要獨處，但是否願意一個月撥空幾次給彼此？",
       options: [
-        "(A) 完全沒問題，每週末都可以安排各自獨立活動的時間",
-        "(B) 一個月 1-2 次即可，異地生活還是希望大部分時間一起行動",
-        "(C) 需要提前 1-2 天告知，只要安排好隨時都可以"
+        "(A) 一個月 1-2 次，還是希望能多認識朋友",
+        "(B) 可彈性，提前 3-5 天告知，只要安排好隨時都可以"
       ]
     },
     {
@@ -298,32 +313,32 @@
       cat: "六、 環境與設備適應",
       title: "防盜與門禁習慣：出門或入睡時門窗能否接受鎖緊？",
       options: [
-        "(A) 非常堅持，只要離開視線或入睡，門鎖、防盜鎖必須全上",
-        "(B) 出門鎖門即可，人在室內或入睡時鎖主門就好，窗戶留縫通風",
-        "(C) 社區若有保安就可以放鬆一點，不用每次都鎖到最死"
+        "(A) 非常堅持，只要離開視線或入睡，全部的門鎖必須全上",
+        "(B) 出門鎖門即可，人在室內或入睡時鎖主門就好"
       ]
     },
+    // 七、水質與用水習慣
     {
-      cat: "六、 環境與設備適應",
+      cat: "七、 水質與用水習慣",
       title: "水質與用水習慣：菲律賓水質較硬，若喝不習慣，可接受多久一起採買一次罐裝水？",
       options: [
-        "(A) 每週固定大採買一次（買大容量桶裝水），確保隨時有水喝",
-        "(B) 2-3 天補一次水，或者直接叫大桶水送上門",
-        "(C) 誰喝完誰去買，不特別設定固定採買週期"
+        "(A) 每週固定大採買一次，確保隨時有水喝",
+        "(B) 2-3 天補一次水，或者直接叫大桶水送上門"
       ]
     },
-    // 七、衝突處理與未來退場
+    // 八、衝突處理與未來退場
     {
-      cat: "七、 衝突處理與未來退場",
+      cat: "八、 衝突處理與未來退場",
       title: "吵架時絕對不可以做的事？",
       options: [
         "(A) 摔東西、甩門或有任何肢體暴力傾向",
         "(B) 冷暴力、直接封鎖訊息或摔門離家出走",
-        "(C) 翻舊帳、人身攻擊或輕易說出「分手」"
+        "(C) 翻舊帳、人身攻擊或輕易說出「分手」",
+        "(D) 以上皆是"
       ]
     },
     {
-      cat: "七、 衝突處理與未來退場",
+      cat: "八、 衝突處理與未來退場",
       title: "是否同意不帶情緒過夜？",
       options: [
         "(A) 必須當天把事情講清楚，絕對不能帶情緒睡覺",
@@ -332,12 +347,11 @@
       ]
     },
     {
-      cat: "七、 衝突處理與未來退場",
+      cat: "八、 衝突處理與未來退場",
       title: "若未來發現真的不適合，退場機制是？",
       options: [
-        "(A) 給予 1-2 週緩衝期，討論開誠布公後各自尋找新住處",
-        "(B) 關閉交往狀態，轉換為純室友模式平分費用，直到旅程結束",
-        "(C) 立即結算費用，其中一方迅速改訂新住宿搬離"
+        "(A) 給予 1-2 週緩衝期，討論開誠布公後各自祝福",
+        "(B) 關閉交往狀態，轉換為純室友模式，直到旅程"
       ]
     }
   ];
